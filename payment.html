@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MetaMask Payment</title>
+</head>
+<body>
+    <h1>Pay with MetaMask</h1>
+    <button onclick="connectWallet()">Connect Wallet</button>
+    <button onclick="sendPayment()">Pay 0.01 ETH</button>
+    <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+    <script>
+        // Include the JavaScript functions (connectWallet and sendPayment) here
+        async function connectWallet() {
+            if (typeof window.ethereum !== 'undefined') {
+    console.log('MetaMask is installed!');
+} else {
+    alert('Please install MetaMask to make payments!');
+}
+
+    if (window.ethereum) {
+        try {
+            await ethereum.request({ method: 'eth_requestAccounts' });
+            const accounts = await ethereum.request({ method: 'eth_accounts' });
+            console.log('Connected account:', accounts[0]);
+            alert('Wallet connected: ' + accounts[0]);
+        } catch (err) {
+            console.error('Connection error:', err.message);
+        }
+    } else {
+        alert('MetaMask not detected!');
+    }
+}
+async function sendPayment() {
+    const recipient = "0xYourMetaMaskWalletAddress"; // Replace with your wallet address
+    const amount = "0.01"; // Amount in ETH
+    const weiValue = Web3.utils.toWei(amount, "ether");
+
+    try {
+        const transactionParameters = {
+            to: recipient, // Recipient address
+            from: ethereum.selectedAddress, // Connected wallet address
+            value: Web3.utils.toHex(weiValue), // Amount in Wei
+        };
+        const txHash = await ethereum.request({
+            method: 'eth_sendTransaction',
+            params: [transactionParameters],
+        });
+        console.log('Transaction successful, hash:', txHash);
+        alert('Payment successful! Transaction Hash: ' + txHash);
+    } catch (error) {
+        console.error('Payment error:', error.message);
+        alert('Payment failed. Please try again.');
+    }
+}
+
+
+    </script>
+</body>
+</html>
